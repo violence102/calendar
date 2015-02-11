@@ -1,0 +1,35 @@
+<p> This is calendar site. </p>
+<div class="calendar-month">
+  <div class="month-prev">
+    <button class="month-left" ng-click="moveMonth(-1)">
+      <span class="glyphicon glyphicon-chevron-left"></span>
+    </button>
+  </div>
+  <div class="month-text">
+    {{ months[currentDate.getMonth()] }}  {{ currentDate.getFullYear() }}
+  </div>
+  <div class="month-next">
+    <button class="month-right"  ng-click="moveMonth(1)">
+      <span class="glyphicon glyphicon-chevron-right"></span>
+    </button>
+  </div>
+</div>
+<table class="calendar-table">
+  <tbody>
+    <tr>
+      <th ng-repeat="day in days" class="calendar-header"> {{ day }} </th>
+    </tr>
+    <tr ng-repeat="i in getNumber(rowsNumber) track by $index" ng-init="sectionIndex = $index">
+      <td ng-repeat="i in getNumber(columnsNumber) track by $index">
+        <div class="day-box">
+          <p ng-if="sectionIndex == 0 && $index >= convertDayToColumn(firstDayOfMonth())">
+            {{ dayNumbers[$index - firstDayColumnNumber] }}
+          </p>
+          <p ng-if="sectionIndex > 0 && dayNumbers[(sectionIndex * 7 + $index) - firstDayColumnNumber] <= numberOfDays()">
+            {{ dayNumbers[(sectionIndex * 7 + $index) - firstDayColumnNumber] }}
+          </p>
+        <div>
+      </td>
+    </tr>
+  </tbody>
+</table>
