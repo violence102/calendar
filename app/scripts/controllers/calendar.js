@@ -8,11 +8,12 @@
  * Controller of the calendarApp
  */
 angular.module('calendarApp')
-  .controller('CalendarCtrl', function ($scope) {
+  .controller('CalendarCtrl', ['$scope', '$http', function ($scope, $http) {
     $scope.currentDate = new Date();
     $scope.firstDay = new Date();
     $scope.lastDay = new Date();
     $scope.actualDayNumber = 0;
+    $scope.dates = [];
     $scope.days = ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'n'];
     $scope.months = [
       'styczeń',
@@ -33,7 +34,7 @@ angular.module('calendarApp')
     $scope.firstDayColumnNumber = 0;
 
     $scope.moveMonth = function(step) {
-      $scope.currentDate.setMonth($scope.currentDate.getMonth() + step)
+      $scope.currentDate.setMonth($scope.currentDate.getMonth() + step);
       $scope.actualDayNumber = 0;
     };
 
@@ -44,16 +45,16 @@ angular.module('calendarApp')
     };
 
     $scope.isLeapYear = function() {
-      if($scope.currentDate.getFullYear() % 100 == 0 && $scope.currentDate.getFullYear() % 400 != 0) {
+      if($scope.currentDate.getFullYear() % 100 === 0 && $scope.currentDate.getFullYear() % 400 !== 0) {
         return false;
       }
-      if($scope.currentDate.getFullYear() % 400 == 0) {
+      if($scope.currentDate.getFullYear() % 400 === 0) {
         return true;
       }
-      if($scope.currentDate.getFullYear() % 4 == 0) {
+      if($scope.currentDate.getFullYear() % 4 === 0) {
         return true;
       }
-    }
+    };
 
     $scope.numberOfDays = function() {
       switch($scope.currentDate.getMonth()) {
@@ -79,13 +80,14 @@ angular.module('calendarApp')
     $scope.firstDayOfMonth = function() {
       $scope.setFirstDay();
       $scope.firstDayColumnNumber = $scope.convertDayToColumn($scope.firstDay.getDay());
+      $scope.getDates();
       return $scope.firstDay.getDay();
     };
 
     $scope.columnsNumber = 7;
     $scope.rowsNumber = 5;
     $scope.getNumber = function(num) {
-      if($scope.convertDayToColumn($scope.firstDayOfMonth()) + $scope.numberOfDays() == 28) {
+      if($scope.convertDayToColumn($scope.firstDayOfMonth()) + $scope.numberOfDays() === 28) {
         $scope.rowsNumber = 4;
       } else if($scope.convertDayToColumn($scope.firstDayOfMonth()) + $scope.numberOfDays() <= 35) {
         $scope.rowsNumber = 5;
@@ -93,5 +95,13 @@ angular.module('calendarApp')
         $scope.rowsNumber = 6;
       }
       return new Array(num);   
-    }
-  });
+    };
+
+    $scope.getDates = function() {
+      console.log('getData');
+      $http.get('http://www.fenixzespol.pl/api.php').
+        success(function(data) {
+            $scope.dates = data;
+        });
+    };
+  }]);
