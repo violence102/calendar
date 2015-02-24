@@ -16,6 +16,8 @@ angular.module('calendarApp')
     $scope.actualDayNumber = 0;
     $scope.dates = null;
     $scope.busyDates = null;
+    $scope.enableLeftArrow = true;
+    $scope.enableRightArrow = true;
     $scope.days = ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'n'];
     $scope.months = [
       'styczeń',
@@ -42,6 +44,18 @@ angular.module('calendarApp')
         miesiac: '' + ($scope.currentDate.getMonth() + 1),
         rok: '' + $scope.currentDate.getFullYear()
       }, true);
+      if($scope.currentDate.getFullYear() - $scope.todayDate.getFullYear() > -2) {
+        $scope.enableLeftArrow = true;
+      } 
+      if($scope.currentDate.getFullYear() - $scope.todayDate.getFullYear() === -2) {
+        $scope.enableLeftArrow = ($scope.currentDate.getMonth() !== 0);
+      }
+      if($scope.currentDate.getFullYear() - $scope.todayDate.getFullYear() < 2) {
+        $scope.enableRightArrow = true;
+      } 
+      if($scope.currentDate.getFullYear() - $scope.todayDate.getFullYear() === 2) {
+        $scope.enableRightArrow = ($scope.currentDate.getMonth() !== 11);
+      }
     };
 
     $scope.setFirstDay = function() {
@@ -107,7 +121,7 @@ angular.module('calendarApp')
         dzien: '' + day,
         rodzaj: '1'
       }, true);
-      return busy.length > 0;
+      return busy !== null ? busy.length > 0 : false;
     };
 
     $scope.isUnavailable = function(day) {
@@ -115,18 +129,23 @@ angular.module('calendarApp')
         dzien: '' + day,
         rodzaj: '4'
       }, true);
-      return busy.length > 0;
+      return busy !== null ? busy.length > 0 : false;
     };
 
     $scope.isToday = function(day) {
-      return $scope.currentDate.getMonth() === $scope.todayDate.getMonth() && day === $scope.todayDate.getDate();
+      return $scope.currentDate.getFullYear() === $scope.todayDate.getFullYear() &&
+              $scope.currentDate.getMonth() === $scope.todayDate.getMonth() &&
+               day === $scope.todayDate.getDate();
     };
 
     var init = function () {
-      console.log('getData');
       $http.get('http://fenixzespol.pl/api.php').
         success(function(data) {
             $scope.dates = data;
+            $scope.busyDates = $filter('filter')($scope.dates, {
+              miesiac: '' + ($scope.currentDate.getMonth() + 1),
+              rok: '' + $scope.currentDate.getFullYear()
+            }, true);
         });
     };
 

@@ -95,6 +95,10 @@ body {
   text-align: center;
 }
 
+.calendar-row {
+  padding-bottom: 5px;
+}
+
 .month-left {
   padding-left: 250px;
   border: none;
