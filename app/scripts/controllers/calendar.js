@@ -8,12 +8,14 @@
  * Controller of the calendarApp
  */
 angular.module('calendarApp')
-  .controller('CalendarCtrl', ['$scope', '$http', function ($scope, $http) {
+  .controller('CalendarCtrl', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
     $scope.currentDate = new Date();
+    $scope.todayDate = new Date();
     $scope.firstDay = new Date();
     $scope.lastDay = new Date();
     $scope.actualDayNumber = 0;
-    $scope.dates = [];
+    $scope.dates = null;
+    $scope.busyDates = null;
     $scope.days = ['pn', 'wt', 'śr', 'cz', 'pt', 'so', 'n'];
     $scope.months = [
       'styczeń',
@@ -36,6 +38,10 @@ angular.module('calendarApp')
     $scope.moveMonth = function(step) {
       $scope.currentDate.setMonth($scope.currentDate.getMonth() + step);
       $scope.actualDayNumber = 0;
+      $scope.busyDates = $filter('filter')($scope.dates, {
+        miesiac: '' + ($scope.currentDate.getMonth() + 1),
+        rok: '' + $scope.currentDate.getFullYear()
+      }, true);
     };
 
     $scope.setFirstDay = function() {
@@ -80,7 +86,6 @@ angular.module('calendarApp')
     $scope.firstDayOfMonth = function() {
       $scope.setFirstDay();
       $scope.firstDayColumnNumber = $scope.convertDayToColumn($scope.firstDay.getDay());
-      $scope.getDates();
       return $scope.firstDay.getDay();
     };
 
@@ -97,11 +102,34 @@ angular.module('calendarApp')
       return new Array(num);   
     };
 
-    $scope.getDates = function() {
+    $scope.isBusy = function(day) {
+      var busy = $filter('filter')($scope.busyDates, {
+        dzien: '' + day,
+        rodzaj: '1'
+      }, true);
+      return busy.length > 0;
+    };
+
+    $scope.isUnavailable = function(day) {
+      var busy = $filter('filter')($scope.busyDates, {
+        dzien: '' + day,
+        rodzaj: '2'
+      }, true);
+      return busy.length > 0;
+    };
+
+    $scope.isToday = function(day) {
+      return $scope.currentDate.getMonth() === $scope.todayDate.getMonth() && day === $scope.todayDate.getDate();
+    };
+
+    var init = function () {
       console.log('getData');
-      $http.get('http://www.fenixzespol.pl/api.php').
+      $http.get('http://fenixzespol.pl/api.php').
         success(function(data) {
             $scope.dates = data;
         });
     };
+
+    init();
+
   }]);

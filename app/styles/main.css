@@ -87,7 +87,7 @@ body {
 }
 
 .calendar-header {
-  padding: 40px 40px;
+  padding: 20px 20px;
 }
 
 .calendar-month {
@@ -124,4 +124,22 @@ body {
   width: 50px;
   height: 50px;
   text-align: center;
+  line-height: 50px;
+  vertical-align: middle;
+  border-radius: 10px;
+}
+
+.busy {
+  background-color: #9e1f1f;
+  color: #fff;
+}
+
+.unavailable {
+  background-color: #444;
+  color: #fff;
+}
+
+.today {
+  background-color: #5f7eae;
+  color: #fff;
 }

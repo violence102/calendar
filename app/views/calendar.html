@@ -14,14 +14,16 @@
     </button>
   </div>
 </div>
-<table class="calendar-table">
+<table class="calendar-table" ng-show="dates">
   <tbody>
     <tr>
       <th ng-repeat="day in days" class="calendar-header"> {{ day }} </th>
     </tr>
     <tr ng-repeat="i in getNumber(rowsNumber) track by $index" ng-init="sectionIndex = $index">
-      <td ng-repeat="i in getNumber(columnsNumber) track by $index">
-        <div class="day-box">
+      <td style = "padding-bottom: 5px;" ng-repeat="j in getNumber(columnsNumber) track by $index">
+        <div class="day-box" ng-class="{busy: isBusy(dayNumbers[(sectionIndex * 7 + $index) - firstDayColumnNumber]),
+              unavailable: isUnavailable(dayNumbers[(sectionIndex * 7 + $index) - firstDayColumnNumber]),
+              today: isToday(dayNumbers[(sectionIndex * 7 + $index) - firstDayColumnNumber])}">
           <p ng-if="sectionIndex == 0 && $index >= convertDayToColumn(firstDayOfMonth())">
             {{ dayNumbers[$index - firstDayColumnNumber] }}
           </p>
@@ -33,6 +35,3 @@
     </tr>
   </tbody>
 </table>
-<div>
-  {{ dates }}
-</div>
