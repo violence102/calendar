@@ -113,7 +113,7 @@ angular.module('calendarApp')
     $scope.isUnavailable = function(day) {
       var busy = $filter('filter')($scope.busyDates, {
         dzien: '' + day,
-        rodzaj: '2'
+        rodzaj: '4'
       }, true);
       return busy.length > 0;
     };
